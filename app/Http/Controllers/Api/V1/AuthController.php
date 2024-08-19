@@ -28,7 +28,8 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            $user = Auth::user();
+            $user = User::find(Auth::id()); // its for the lsp that keeps buggin
+
             $token = $user->createToken('authToken')->plainTextToken;
             return response()->json(['token' => $token], 200);
         } else {
