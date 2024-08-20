@@ -34,6 +34,9 @@ class MovieController extends Controller
     {
         return $movieService->find($id); // Fetch details of a specific movie using the movie() method from the trait
     }
+    /**/
+    /* fetch top 5 best rated movies from tmdb */
+    /**/
     public function topRated(Request $request, MovieService $movieService)
     {
         return $movieService->getTopRated($request->query());
@@ -41,7 +44,7 @@ class MovieController extends Controller
 
     public function trailer(string $movieId, MovieService $movieService)
     {
-        // Fetch details of a specific movie using the movie() method from the trait
+        // Fetch the trailer of a specific movie using tmdb api that is handled by the getTrailer function
         return $movieService->getTrailer($movieId);
     }
 }

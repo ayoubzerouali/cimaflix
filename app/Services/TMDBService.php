@@ -27,14 +27,18 @@ class TMDBService
             'query' => $params, // Add query parameters for specifiactions
         ];
 
-        /* try { */
-        $url = $this->base . $endpoint;
-        $response = $this->client->request('GET', $url, $options);
-        return json_decode($response->getBody());
-        /* } catch (\Exception $e) { */
-        /*     throw  new \App\Exceptions\ApiException('Error occurred during API request', 0, $e);; */
-        /* } */
+        try {
+            $url = $this->base . $endpoint;
+            $response = $this->client->request('GET', $url, $options);
+            return json_decode($response->getBody());
+        } catch (\Exception $e) {
+            throw  new \App\Exceptions\ApiException('Error occurred during API request', 0, $e);
+        }
     }
+
+    /**/
+    /* Search movies and series  */
+    /**/
     public function search($query, $perPage = 10, $currentPage = 1)
     {
         $response = $this->makeRequest('search/multi', [
@@ -48,7 +52,7 @@ class TMDBService
 
         // Filter results
         $filteredResults = array_filter($results, function ($item) {
-            return in_array($item->media_type, ['movie', 'tv']);
+            return in_array($item->media_type, ['movie', 'tv']); // return only the data with media type as movie/serie
         });
 
         // Paginate results

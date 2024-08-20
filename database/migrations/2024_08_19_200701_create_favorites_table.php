@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('favorites', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('movie_id');
+            $table->bigInteger('content_id');
             $table->foreignId('user_id')->constrained();
+            $table->enum('type', ['movie', 'tv']);
             $table->timestamps();
         });
     }

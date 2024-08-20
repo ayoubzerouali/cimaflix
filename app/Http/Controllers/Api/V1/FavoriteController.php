@@ -3,34 +3,47 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Favorite;
-use Illuminate\Support\Facades\Auth;
+use App\Services\FavoriteService;
+use Illuminate\Http\JsonResponse;
 
 class FavoriteController extends Controller
 {
-
-    public function index()
+    /**/
+    /* fetch all users favorite movies/series */
+    /**/
+    public function index(FavoriteService $favoriteService): JsonResponse
     {
-
-        $favs = Favorite::where('user_id', Auth::id())->get();
-        return response()->json(['success' => true, 'data' => $favs], 200);
+        return $favoriteService->all(); // calling the favorites service which will handle the fetch functionnality
     }
 
-    public function store($movieId)
+    /**/
+    /* store favorite serie in database */
+    /**/
+    public function storeFavTv(string $contentId, FavoriteService $favoriteService): JsonResponse
     {
-        $user = Auth::id();
-        Favorite::create([
-            'movie_id' => $movieId,
-            'user_id' => $user
-        ]);
-        return response()->json(['success' => true], 201);
+
+        return $favoriteService->store($contentId, 'tv'); // returning success response
     }
-    public function destroy($movieId)
+    /**/
+    /* Store movie as favorite for the user */
+    /**/
+    public function storeFavMovie(string $contentId, FavoriteService $favoriteService): JsonResponse
     {
-        $fav = Favorite::where('user_id', Auth::id())->where('movie_id', $movieId)->first();
-        $fav->delete();
-        return response()->json(['success', true], 200);
+        return $favoriteService->store($contentId, 'movie'); // returning success response
     }
 
-    public function details() {}
+    /**/
+    /* remove movie from favorite list */
+    /**/
+    public function destroyFavMovie(string $id, FavoriteService $favoriteService): JsonResponse
+    {
+        return $favoriteService->delete($id, 'movie');
+    }
+    /**/
+    /* remove series from favorite list  */
+    /**/
+    public function destroyFavSerie(string $id, FavoriteService $favoriteService): JsonResponse
+    {
+        return $favoriteService->delete($id, 'tv');
+    }
 }
