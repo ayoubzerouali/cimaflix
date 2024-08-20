@@ -43,7 +43,7 @@ class AuthController extends Controller
             $request->all(),
             [
                 'username' => 'required|string|unique:users,username|max:255',
-                'email' => 'required|email|unique:users,email',
+                'email' => 'nullable|email|unique:users,email',
                 'password' => 'required|string|min:8',
             ]
         );
@@ -54,7 +54,7 @@ class AuthController extends Controller
 
         $user = User::create([
             'username' => $request->username,
-            'email' => $request->email,
+            'email' => $request->email ?? $request->username . '@cimaflix.com',
             'password' => Hash::make($request->password)
         ]);
 

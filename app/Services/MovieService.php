@@ -2,8 +2,6 @@
 
 namespace App\Services;
 
-
-
 class MovieService extends TMDBService
 {
     /**
@@ -27,5 +25,9 @@ class MovieService extends TMDBService
     public function getTrailer($id)
     {
         return $this->makeRequest('movie/' . $id . '/videos');
+    }
+    public function getTopRated($params)
+    {
+        return $this->makeRequest('discover/movie', $params);
     }
 }

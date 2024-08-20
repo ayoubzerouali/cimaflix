@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-/* use App\Models\Movie; */
 use App\Services\MovieService;
+use Illuminate\Http\Request;
 
-/* use App\Models\Movie; */
-/* use Illuminate\Http\Request; */
+
 
 class MovieController extends Controller
 {
@@ -33,10 +32,12 @@ class MovieController extends Controller
      */
     public function show(string $id, MovieService $movieService)
     {
-        // Fetch details of a specific movie using the movie() method from the trait
-        return $movieService->find('movie', $id);
+        return $movieService->find('movie', $id); // Fetch details of a specific movie using the movie() method from the trait
     }
-
+    public function topRated(Request $request, MovieService $movieService)
+    {
+        return $movieService->getTopRated($request->query());
+    }
 
     public function trailer(string $movieId, MovieService $movieService)
     {

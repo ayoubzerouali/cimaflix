@@ -13,10 +13,19 @@ use App\Http\Controllers\Api\V1\SerieController;
 Route::prefix('/v1')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
-    Route::apiResource('movies', MovieController::class)->only(['index', 'show']);
-    Route::apiResource('series', SerieController::class)->only(['index', 'show']);
-    Route::get('trailer/{serieId}', [SerieController::class, 'trailer']);
-    Route::get('trailer/{movieId}', [MovieController::class, 'trailer']);
+
+    Route::prefix('series')->controller(SerieController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+        Route::get('trailer/{serieId}', 'trailer');
+        Route::get('top', 'topRated');
+    });
+    Route::prefix('movies')->controller(MovieController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+        Route::get('trailer/{movieId}', 'trailer');
+        Route::get('top', 'topRated');
+    });
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('user', function (Request $request) {

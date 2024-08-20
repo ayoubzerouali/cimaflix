@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Services\SerieService;
+use Illuminate\Http\Request;
 
 class SerieController extends Controller
 {
@@ -24,7 +25,11 @@ class SerieController extends Controller
         return $serieService->find($id);
     }
 
-    public function trailer(SerieService $serieService,$serieId)
+    public function topRated(Request $request, SerieService $serieService)
+    {
+        return $serieService->getTopRated($request->query());
+    }
+    public function trailer(SerieService $serieService, $serieId)
     {
         return $serieService->getTrailer($serieId);
     }
