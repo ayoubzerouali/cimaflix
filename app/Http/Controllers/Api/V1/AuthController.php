@@ -16,7 +16,7 @@ class AuthController extends Controller
         $validation = Validator::make(
             $request->all(),
             [
-                'email' => 'required|email',
+                'username' => 'required',
                 'password' => 'required',
             ]
         );
@@ -25,7 +25,7 @@ class AuthController extends Controller
             return response()->json($validation->errors(), 422);
         }
 
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials)) {
             $user = User::find(Auth::id()); // because the lsp kept buggin
@@ -33,7 +33,7 @@ class AuthController extends Controller
             $token = $user->createToken('authToken')->plainTextToken;
             return response()->json(['token' => $token], 200);
         } else {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'Wrong credentials'], 401);
         }
     }
 
@@ -42,7 +42,7 @@ class AuthController extends Controller
         $validation = Validator::make(
             $request->all(),
             [
-                'name' => 'required|string|max:255',
+                'username' => 'required|string|unique:users,username|max:255',
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|string|min:8',
             ]
@@ -53,7 +53,7 @@ class AuthController extends Controller
         }
 
         $user = User::create([
-            'name' => $request->name,
+            'username' => $request->username,
             'email' => $request->email,
             'password' => Hash::make($request->password)
         ]);

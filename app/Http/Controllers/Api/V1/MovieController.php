@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Models\Movie;
+/* use App\Models\Movie; */
 use App\Services\MovieService;
 
 /* use App\Models\Movie; */
@@ -16,7 +16,7 @@ class MovieController extends Controller
      */
     public function index(MovieService $movies)
     {
-        return $movies->allTmdb('movie');
+        return $movies->all('movie');
     }
 
     /**
@@ -34,30 +34,13 @@ class MovieController extends Controller
     public function show(string $id, MovieService $movieService)
     {
         // Fetch details of a specific movie using the movie() method from the trait
-        return $movieService->findTmdb('movie', $id);
+        return $movieService->find('movie', $id);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    /* public function update(Request $request, string $id) */
-    /* { */
-    /*     // */
-    /* } */
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function trailer(string $movieId, MovieService $movieService)
     {
-        //
+        // Fetch details of a specific movie using the movie() method from the trait
+        return $movieService->getTrailer($movieId);
     }
 }

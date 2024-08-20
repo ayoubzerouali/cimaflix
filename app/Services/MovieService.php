@@ -2,57 +2,30 @@
 
 namespace App\Services;
 
-use GuzzleHttp\Client;
 
-class MovieService
+
+class MovieService extends TMDBService
 {
-    protected $headers;
-    protected $base;
-    protected $client;
-    public function __construct()
-    {
-        $this->headers = [
-            'headers' => [
-                'Authorization' => 'Bearer ' . env('TMDB_KEY'),
-                'accept' => 'application/json',
-            ],
-        ];
-
-        $this->base = 'https://api.themoviedb.org/3/';
-        $this->client = new Client();
-    }
     /**
      * Call the tmdb api to fetch many movies/series .
      */
-    public function allTmdb($type)
+    public function all()
     {
-        try {
-            $response =  $this->client->request('GET', $this->base . 'discover/' . $type, $this->headers);
-            return $response->getBody();
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to fetch' . $type . ' data', 'message' => $e->getMessage()]);
-        }
+        return $this->makeRequest('discover/movie');
     }
     /**
      * Call the tmdb api to fetch movie/serie by id.
      */
-    public  function findTmdb($type, $id)
+    public  function find($id)
     {
-        $client = new Client();
-        $response =  $client->request('GET', $this->base . $type . '/' . $id, $this->headers);
-        return $response->getBody();
+        return $this->makeRequest('movie/' . $id);
     }
 
     /**
      * Call the tmdb api to fetch (movie/serie)'s trailer .
      */
-    public function getTrailer($type, $id)
+    public function getTrailer($id)
     {
-        try {
-            $response = $this->client->request('GET', $this->base . $type . '/' . $id . '/videos', $this->headers);
-            return $response->getBody();
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to fetch trailer', 'message' => $e->getMessage()], 500);
-        }
+        return $this->makeRequest('movie/' . $id . '/videos');
     }
 }

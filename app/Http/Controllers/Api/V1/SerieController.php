@@ -3,35 +3,29 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Services\ApiCall;
-use Illuminate\Http\Request;
+use App\Services\SerieService;
 
 class SerieController extends Controller
 {
-    use ApiCall;
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(SerieService $serieService)
     {
-        //
+        return $serieService->all();
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(SerieService $serieService, string $id)
     {
-        //
+
+        return $serieService->find($id);
     }
 
-    public function trailer($serieId)
+    public function trailer(SerieService $serieService,$serieId)
     {
-        try {
-            $trailer = $this->getTrailer('tv', $serieId);
-            return $trailer;
-        } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to fetch trailer', 'message' => $e->getMessage()], 500);
-        }
+        return $serieService->getTrailer($serieId);
     }
 }

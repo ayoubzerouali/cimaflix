@@ -15,14 +15,12 @@ Route::prefix('/v1')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::apiResource('movies', MovieController::class)->only(['index', 'show']);
     Route::apiResource('series', SerieController::class)->only(['index', 'show']);
-    Route::get('trailer/{serieId}', [SerieController::class,'trailer']);
+    Route::get('trailer/{serieId}', [SerieController::class, 'trailer']);
+    Route::get('trailer/{movieId}', [MovieController::class, 'trailer']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('user', function (Request $request) {
             return $request->user();
         });
-        /* Route::apiResource('movies', MovieController::class)->except(['index', 'show']); */
-        /* Route::apiResource('movies', SerieController::class)->except(['index', 'show']); */
     });
 });
-?>
