@@ -24,20 +24,14 @@ class MovieService extends TMDBService
 
         $movies = MovieResource::collection($response['results']);
         $total = $response['total_results'];
-        /* $totalPages = ceil($total / $perPage); */
 
-        $currentPageMovies = 0;
-        if ($currentPage % 2 == 0) {
-            // Even page: Take items from the start of the page
-            $currentPageMovies = $movies->slice(($currentPage - 1) * $perPage % $apiPerPage, $perPage)->values();
-        } else {
-            // Odd page: Take items from the middle of the page
-            $currentPageMovies = $movies->slice((($currentPage - 1) * $perPage % $apiPerPage) + $perPage, $perPage)->values();
-        }
-        /* $currentPageMovies = $movies->slice(($currentPage - 1) * $perPage, $perPage); */
+        // Even page: Take items from the start of the page
+        $currentPageMovies = $movies->slice(($currentPage - 1) * $perPage % $apiPerPage, $perPage)->values();
+
         $paginatedMovies = new LengthAwarePaginator($currentPageMovies, $total, $perPage, $currentPage, [
             'path' => Paginator::resolveCurrentPath()
         ]);
+
         return response()->json([
             'success' => true,
             'page' => $response['page'],

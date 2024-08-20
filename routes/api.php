@@ -6,11 +6,12 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::controller(FavoriteController::class)->prefix('/v1/movies/favorites')->group(function () {
-    Route::get('/', 'index')->middleware('auth:sanctum');
-    Route::post('/{id}', 'store')->middleware('auth:sanctum');
+    Route::get('/', 'index')->middleware('auth:sanctum'); // retrieve all favorites
+    Route::post('/{id}', 'store')->middleware('auth:sanctum'); // store favorite
+    Route::delete('/{id}', 'destroy')->middleware('auth:sanctum'); // delete favorite
 });
-
 Route::prefix('/v1')->group(function () {
+    Route::get('search', [SearchController::class, 'search']);
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
 

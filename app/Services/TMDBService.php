@@ -4,7 +4,7 @@ namespace App\Services;
 
 use GuzzleHttp\Client;
 
-abstract class TMDBService
+class TMDBService
 {
     protected $client;
     protected $base;
@@ -34,5 +34,32 @@ abstract class TMDBService
         /* } catch (\Exception $e) { */
         /*     throw  new \App\Exceptions\ApiException('Error occurred during API request', 0, $e);; */
         /* } */
+    }
+    public function search($query, $perPage = 10, $currentPage = 1)
+    {
+        $response = $this->makeRequest('search/multi', [
+            'query' => $query,
+            'include_adult' => 'false',
+            'language' => 'en-US',
+            'page' => $currentPage
+        ]);
+
+        $results = $response->results;
+
+        // Filter results
+        $filteredResults = array_filter($results, function ($item) {
+            return in_array($item->media_type, ['movie', 'tv']);
+        });
+
+        // Paginate results
+        $total = $response->total_results;
+        $currentPageResults = array_slice($filteredResults, ($currentPage - 1) * $perPage, $perPage);
+
+        return [
+            'data' => $currentPageResults,
+            'total' => $total,
+            'currentPage' => $currentPage,
+            'perPage' => $perPage
+        ];
     }
 }

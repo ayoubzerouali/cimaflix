@@ -12,7 +12,7 @@ class SerieService extends TMDBService
      * Call the tmdb api to fetch many series/series .
      */
 
-     public function all()
+    public function all()
     {
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $perPage = 10; // NUmber of items per page returned by our API
@@ -25,17 +25,9 @@ class SerieService extends TMDBService
 
         $series = SerieResource::collection($response['results']);
         $total = $response['total_results'];
-        /* $totalPages = ceil($total / $perPage); */
 
-        $currentPageSeries = 0;
-        if ($currentPage % 2 == 0) {
-            // Even page: Take items from the start of the page
-            $currentPageSeries = $series->slice(($currentPage - 1) * $perPage % $apiPerPage, $perPage)->values();
-        } else {
-            // Odd page: Take items from the middle of the page
-            $currentPageSeries = $series->slice((($currentPage - 1) * $perPage % $apiPerPage) + $perPage, $perPage)->values();
-        }
-        /* $currentPageSeries = $series->slice(($currentPage - 1) * $perPage, $perPage); */
+        $currentPageSeries = $series->slice(($currentPage - 1) * $perPage % $apiPerPage, $perPage)->values();
+
         $paginatedSeries = new LengthAwarePaginator($currentPageSeries, $total, $perPage, $currentPage, [
             'path' => Paginator::resolveCurrentPath()
         ]);
