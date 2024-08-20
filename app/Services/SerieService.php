@@ -18,12 +18,18 @@ class SerieService extends TMDBService
     {
         return $this->makeRequest('tv/' . $id);
     }
+
+    /**
+     * Call the tmdb api to fetch 5 top movies ranked by popularity.
+     */
     public function getTopRated($params)
     {
-        return $this->makeRequest('discover/tv', $params);
+        /* return $this->makeRequest('discover/tv', $params); */
+
+        return response()->json(['success' => true, 'data' => collect($this->makeRequest('discover/tv', $params))->take(5)]);
     }
     /**
-     * Call the tmdb api to fetch (movie/serie)'s trailer .
+     * Call the tmdb api to fetch series trailer .
      */
     public function getTrailer($id)
     {

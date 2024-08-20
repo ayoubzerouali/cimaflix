@@ -16,16 +16,18 @@ Route::prefix('/v1')->group(function () {
 
     Route::prefix('series')->controller(SerieController::class)->group(function () {
         Route::get('/', 'index');
-        Route::get('/{id}', 'show');
+        Route::get('show/{id}', 'show');
         Route::get('trailer/{serieId}', 'trailer');
         Route::get('top', 'topRated');
     });
     Route::prefix('movies')->controller(MovieController::class)->group(function () {
         Route::get('/', 'index');
-        Route::get('/{id}', 'show');
+        Route::get('show/{id}', 'show');
         Route::get('trailer/{movieId}', 'trailer');
         Route::get('top', 'topRated');
     });
+
+
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('user', function (Request $request) {

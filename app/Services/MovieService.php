@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+
 class MovieService extends TMDBService
 {
     /**
@@ -9,7 +12,19 @@ class MovieService extends TMDBService
      */
     public function all()
     {
-        return $this->makeRequest('discover/movie');
+        $movies = collect($this->makeRequest('discover/movie'));
+
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 10;
+        $total = $movies['total_results'];
+        $currentPageMovies = $movies->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        $paginatedMovies = new LengthAwarePaginator($currentPageMovies, $total, $perPage, $currentPage, [
+            'path' => Paginator::resolveCurrentPath()
+        ]);
+        return response()->json([
+            'success' => true,
+            'data' => $paginatedMovies
+        ]);
     }
     /**
      * Call the tmdb api to fetch movie/serie by id.
@@ -26,8 +41,11 @@ class MovieService extends TMDBService
     {
         return $this->makeRequest('movie/' . $id . '/videos');
     }
+    /**
+     * Call the tmdb api to fetch 5 top movies ranked by popularity.
+     */
     public function getTopRated($params)
     {
-        return $this->makeRequest('discover/movie', $params);
+        return response()->json(['success' => true, 'data' => collect($this->makeRequest('discover/movie', $params))->take(5)]);
     }
 }

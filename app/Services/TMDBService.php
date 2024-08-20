@@ -30,7 +30,7 @@ abstract class TMDBService
         try {
             $url = $this->base . $endpoint;
             $response = $this->client->request('GET', $url, $options);
-            return response()->json((json_decode($response->getBody())));
+            return json_decode($response->getBody());
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
