@@ -15,7 +15,7 @@ class MovieController extends Controller
      */
     public function index(MovieService $movies)
     {
-        return $movies->all('movie');
+        return $movies->all();
     }
 
     /**
@@ -32,7 +32,7 @@ class MovieController extends Controller
      */
     public function show(string $id, MovieService $movieService)
     {
-        return $movieService->find('movie', $id); // Fetch details of a specific movie using the movie() method from the trait
+        return $movieService->find($id); // Fetch details of a specific movie using the movie() method from the trait
     }
     public function topRated(Request $request, MovieService $movieService)
     {

@@ -4,25 +4,43 @@ namespace App\Services;
 
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use App\Http\Resources\MovieResource;
 
 class MovieService extends TMDBService
 {
     /**
-     * Call the tmdb api to fetch many movies/series .
+     * Call the tmdb api to fetch many movies/movies .
      */
     public function all()
     {
-        $movies = collect($this->makeRequest('discover/movie'));
-
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $perPage = 10;
-        $total = $movies['total_results'];
-        $currentPageMovies = $movies->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        $perPage = 10; // NUmber of items per page returned by our API
+        $apiPerPage = 20;  // Number of items per page returned by the API
+
+        $apiPage = ceil(($currentPage * $perPage) / $apiPerPage);
+
+
+        $response = collect($this->makeRequest('discover/movie', ['page' => $apiPage]));
+
+        $movies = MovieResource::collection($response['results']);
+        $total = $response['total_results'];
+        /* $totalPages = ceil($total / $perPage); */
+
+        $currentPageMovies = 0;
+        if ($currentPage % 2 == 0) {
+            // Even page: Take items from the start of the page
+            $currentPageMovies = $movies->slice(($currentPage - 1) * $perPage % $apiPerPage, $perPage)->values();
+        } else {
+            // Odd page: Take items from the middle of the page
+            $currentPageMovies = $movies->slice((($currentPage - 1) * $perPage % $apiPerPage) + $perPage, $perPage)->values();
+        }
+        /* $currentPageMovies = $movies->slice(($currentPage - 1) * $perPage, $perPage); */
         $paginatedMovies = new LengthAwarePaginator($currentPageMovies, $total, $perPage, $currentPage, [
             'path' => Paginator::resolveCurrentPath()
         ]);
         return response()->json([
             'success' => true,
+            'page' => $response['page'],
             'data' => $paginatedMovies
         ]);
     }
@@ -31,7 +49,7 @@ class MovieService extends TMDBService
      */
     public  function find($id)
     {
-        return $this->makeRequest('movie/' . $id);
+        return new MovieResource((object)$this->makeRequest('movie/' . $id));
     }
 
     /**

@@ -27,12 +27,12 @@ abstract class TMDBService
             'query' => $params, // Add query parameters for specifiactions
         ];
 
-        try {
-            $url = $this->base . $endpoint;
-            $response = $this->client->request('GET', $url, $options);
-            return json_decode($response->getBody());
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()]);
-        }
+        /* try { */
+        $url = $this->base . $endpoint;
+        $response = $this->client->request('GET', $url, $options);
+        return json_decode($response->getBody());
+        /* } catch (\Exception $e) { */
+        /*     throw  new \App\Exceptions\ApiException('Error occurred during API request', 0, $e);; */
+        /* } */
     }
 }

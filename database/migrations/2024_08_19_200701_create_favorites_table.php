@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('favorites', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('movie_id')->constrained();
+            $table->bigInteger('movie_id');
             $table->foreignId('user_id')->constrained();
             $table->timestamps();
         });
