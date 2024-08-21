@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
-
+use Throwable;
 
 class TMDBService
 {
@@ -78,7 +78,6 @@ class TMDBService
             // Paginate results
             $total = $response->total_results; // total number of results
             $currentPageResults = array_slice($filteredResults, ($currentPage - 1) * $perPage, $perPage); // slice results for current page
-
             return [
                 'data' => $currentPageResults, // current page results
                 'total' => $total, // total number of results
@@ -87,16 +86,8 @@ class TMDBService
             ];
         } catch (\Throwable $e) {
             // Handle any kind of throwable (exceptions and errors)
-            return [
-                'data' => [], // Empty data array
-                'total' => 0, // Zero total results
-                'currentPage' => $currentPage, // Current page number
-                'perPage' => $perPage, // Number of results per page
-                'error' => [
-                    'message' => 'An error occurred while processing your request.',
-                    'details' => $e->getMessage() // Include the exception message
-                ]
-            ];
+            report($e);
+            return false;
         }
     }
 }

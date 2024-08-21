@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Exceptions\ApiException;
 use App\Http\Controllers\Controller;
 use App\Services\TMDBService;
+use ErrorException;
 use Illuminate\Http\Request;
 
 class SearchController extends Controller
@@ -39,6 +41,9 @@ class SearchController extends Controller
         // Call the search method of TMDBService and get the results
         $results = $this->tmdbService->search($query, $perPage, $currentPage);
 
+        if (!$results) {
+            return response()->json(['success' => false]);
+        }
         // Return the search results as a JSON response
         return response()->json([
             'success' => true, // Indicate that the request was successful
@@ -46,6 +51,6 @@ class SearchController extends Controller
             'total' => $results['total'], // Total number of results
             'currentPage' => $results['currentPage'], // Current page number
             'perPage' => $results['perPage'] // Number of results per page
-        ]);
+        ], 200);
     }
 }
