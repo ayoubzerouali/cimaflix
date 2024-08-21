@@ -54,7 +54,7 @@ Obtain an API Read Access Token from TMDb and set it in your .env file:
 
 ### YOU CAN FIND THE DOCUMENTATION ON THIS LINK 
 
-<a target='_blank' href="https://documenter.getpostman.com/view/37807536/2sA3sAhnyZ">https://documenter.getpostman.com/view/37807536/2sA3sAhnyZ</a>
+<a target='_blank' href="https://documenter.getpostman.com/view/37807536/2sA3sAi815">DOCUMENTATION</a>
 
 Or directly here :) 
 

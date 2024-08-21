@@ -62,13 +62,13 @@ class FavoriteService
         }
 
         // Create a new favorite record
-        Favorite::createOrUpdate([
+        Favorite::updateOrCreate([
             'content_id' => $id, // Content ID (e.g., movie or series ID)
             'user_id' => $userId, // ID of the authenticated user
             'type' => $type // Type of the favorite (e.g., 'movie' or 'tv')
         ]);
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true,'message'=>$type.' added to favorite']);
     }
     /**
      * a helper function to check the existance of a resource
@@ -105,6 +105,6 @@ class FavoriteService
             return response()->json(['success' => false, 'message' => 'resource not found'], 404);
         }
         $fav->first()->delete();
-        return response()->json(['success', true], 200);
+        return response()->json(['success', true,'message'=>$type.' removed from favorite'], 200);
     }
 }
