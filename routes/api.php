@@ -17,8 +17,11 @@ Route::controller(FavoriteController::class)->prefix('/v1/favorites')->group(fun
     // etore a tv show as a favorite for the authenticated user.
     Route::post('/tv/{id}', 'storeFavTv')->middleware('auth:sanctum');
 
-    // remove a movie or tv show from the user's favorites.
-    Route::delete('/{id}', 'destroy')->middleware('auth:sanctum');
+    // remove a movie from the user's favorites.
+    Route::delete('/{id}', 'destroyFavMovie')->middleware('auth:sanctum');
+
+    // remove a tv show from the user's favorites.
+    Route::delete('/{id}', 'destroyFavMovie')->middleware('auth:sanctum');
 });
 
 /**

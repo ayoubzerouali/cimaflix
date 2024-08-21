@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Favorite;
+use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,12 +23,11 @@ class FavoriteService
      *
      * @return JsonResponse JSON response with the paginated favorite list.
      */
-    public function all()
+    public function all(): JsonResponse|Exception
     {
         try {
             // Attempt to retrieve the paginated list of user's favorite movies
             $response = Favorite::where('user_id', Auth::id())->paginate(10);
-
             // Return a successful JSON response with the paginated data
             return response()->json([
                 'success' => true,
@@ -37,7 +38,7 @@ class FavoriteService
             return response()->json([
                 'success' => false,
                 'message' => 'An error occurred while retrieving favorites.',
-                'error' => $e->getMessage() // Include the exception message for debugging
+                'error' => $e // Include the exception message for debugging
             ], 500); // Return a 500 Internal Server Error status code
         }
     }
@@ -77,7 +78,7 @@ class FavoriteService
      * @return JsonResponse JSON response confirming the addition.
      */
 
-    private function hasFavorite(string $id, string $type)
+    private function hasFavorite(string $id, string $type): Favorite | Builder
     {
         // Retrieve the ID of the currently authenticated user
         $userId = Auth::id();
