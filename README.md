@@ -28,7 +28,7 @@ Before you begin, ensure you have the following installed:
 - **composer install**
 
 ### Install Laravel Sail
-- **composer require laravel/sail --dev**
+
 - **php artisan sail:install**
 - **./vendor/bin/sail up**
 
