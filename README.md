@@ -30,7 +30,6 @@ Before you begin, ensure you have the following installed:
 ### Install Laravel Sail
 
 - **php artisan sail:install**
-- **./vendor/bin/sail up**
 
 ## API TMDB INSTALLATION 
 - **Go to this link <a href="https://www.themoviedb.org/">https://www.themoviedb.org/</a>**
@@ -45,9 +44,10 @@ Obtain an API Read Access Token from TMDb and set it in your .env file:
 
 ### Start Docker Containers
 
-- **./vendor/bin/sail up**  | or **./vendor/bin/sail up -d** 
-- **./vendor/bin/sail artisan key:generate**
-- **./vendor/bin/sail artisan migrate --seed**
+-1 **./vendor/bin/sail up**  | or **./vendor/bin/sail up -d** 
+-2 **./vendor/bin/sail artisan key:generate**
+-3 **./vendor/bin/sail artisan migrate --seed**
+  
 
 
 ## API Endpoints
