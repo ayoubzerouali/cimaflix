@@ -25,6 +25,7 @@ Before you begin, ensure you have the following installed:
 ### Clone the Repository
 - **https://github.com/ayoubzerouali/cimaflix.git**
 - **cd cimaflix**
+- **composer install**
 
 ### Install Laravel Sail
 - **composer require laravel/sail --dev**
@@ -34,20 +35,19 @@ Before you begin, ensure you have the following installed:
 ## API TMDB INSTALLATION 
 - **Go to this link <a href="https://www.themoviedb.org/">https://www.themoviedb.org/</a>**
 - after login get the API KEY
-- 
+- MAKE SURE TO GET THE READ ACCESS TOKEN KEY (not the api key)
 
 Obtain an API Read Access Token from TMDb and set it in your .env file:
-- **TMDB_API_KEY=your_api_read_access_token_here**
+- **TMDB_KEY=your_api_read_access_token_here**
 
 
 ## Running the Application
 
 ### Start Docker Containers
 
-- **./vendor/bin/sail up**
+- **./vendor/bin/sail up**  | or **./vendor/bin/sail up -d** 
 - **./vendor/bin/sail artisan key:generate**
 - **./vendor/bin/sail artisan migrate --seed**
-
 
 
 ## API Endpoints
