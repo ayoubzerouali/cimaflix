@@ -7,60 +7,142 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## About CimaFlix
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+CimaFlix is a movie and series web application built with Laravel. It leverages Laravel's powerful features to provide a seamless and enjoyable experience for users. This README provides instructions for setting up and running the application locally using Docker and Laravel Sail.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Prerequisites
 
-## Learning Laravel
+Before you begin, ensure you have the following installed:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+    Docker
+    Docker Compose
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Installation
 
-## Laravel Sponsors
+### Clone the Repository
+- **https://github.com/ayoubzerouali/cimaflix.git**
+- **cd cimaflix**
+### Install Laravel Sail
+- **composer require laravel/sail --dev**
+- **php artisan sail:install**
+- **./vendor/bin/sail up**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## Installation
+Obtain an API key from TMDb and set it in your .env file:
+- **TMDB_API_KEY=your_api_key_here**
 
-### Premium Partners
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## Running the Application
 
-## Contributing
+### Start Docker Containers
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Code of Conduct
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **./vendor/bin/sail up**
+- **./vendor/bin/sail artisan key:generate**
+- **./vendor/bin/sail artisan migrate --seed**
 
-## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## API Endpoints
 
-## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+User Authentication and Management
+
+    Get Authenticated User Information
+        Endpoint: GET /v1/user
+        Description: Retrieves information about the currently authenticated user.
+        Authentication: Required (Sanctum Token)
+
+    Register a New User
+        Endpoint: POST /v1/register
+        Description: Registers a new user with a username and password.
+        Parameters:
+            username (string) - The user's username.
+            password (string) - The user's password.
+
+    Log In an Existing User
+        Endpoint: POST /v1/login
+        Description: Authenticates an existing user and returns a token for session management.
+        Parameters:
+            username (string) - The user's username.
+            password (string) - The user's password.
+
+Movie and Series Management
+
+    Search for Movies or TV Shows
+        Endpoint: GET /v1/search
+        Description: Searches for movies or TV shows based on query parameters.
+        Parameters:
+            query (string) - The search term (e.g., movie title, TV show name).
+            perPage (integer) - Number of items per page (optional).
+            page (integer) - Page number for pagination (optional).
+
+    Movies Routes
+        List of Movies
+            Endpoint: GET /v1/movies/
+            Description: Retrieves a paginated list of movies.
+        Movie Details
+            Endpoint: GET /v1/movies/show/{id}
+            Description: Retrieves details of a specific movie by its ID.
+            Parameters:
+                id (integer) - The movie ID.
+        Get Movie Trailer
+            Endpoint: GET /v1/movies/trailer/{movieId}
+            Description: Retrieves the trailer for a specific movie.
+            Parameters:
+                movieId (integer) - The movie ID.
+        Top-Rated Movies
+            Endpoint: GET /v1/movies/top
+            Description: Retrieves a list of top-rated movies.
+
+    Series Routes
+        List of Series
+            Endpoint: GET /v1/series/
+            Description: Retrieves a paginated list of TV series.
+        Series Details
+            Endpoint: GET /v1/series/show/{id}
+            Description: Retrieves details of a specific TV series by its ID.
+            Parameters:
+                id (integer) - The series ID.
+        Get Series Trailer
+            Endpoint: GET /v1/series/trailer/{serieId}
+            Description: Retrieves the trailer for a specific TV series.
+            Parameters:
+                serieId (integer) - The series ID.
+        Top-Rated Series
+            Endpoint: GET /v1/series/top
+            Description: Retrieves a list of top-rated TV series.
+
+Favorites Management
+
+    Get All Favorites
+        Endpoint: GET /v1/favorites/
+        Description: Retrieves a list of all favorite movies and TV shows for the authenticated user.
+        Authentication: Required (Sanctum Token)
+
+    Add a Movie to Favorites
+        Endpoint: POST /v1/favorites/movie/{id}
+        Description: Adds a movie to the authenticated user's favorites list.
+        Parameters:
+            id (integer) - The movie ID.
+        Authentication: Required (Sanctum Token)
+
+    Add a TV Show to Favorites
+        Endpoint: POST /v1/favorites/tv/{id}
+        Description: Adds a TV show to the authenticated user's favorites list.
+        Parameters:
+            id (integer) - The TV show ID.
+        Authentication: Required (Sanctum Token)
+
+    Remove from Favorites
+        Endpoint: DELETE /v1/favorites/{id}
+        Description: Removes a movie or TV show from the authenticated user's favorites list.
+        Parameters:
+            id (integer) - The ID of the movie or TV show to be removed.
+        Authentication: Required (Sanctum Token)
+
+
+

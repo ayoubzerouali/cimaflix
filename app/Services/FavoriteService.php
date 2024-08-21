@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Favorite;
-use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,12 +23,23 @@ class FavoriteService
      */
     public function all()
     {
-        $response = Favorite::where('user_id', Auth::id())->paginate(10); // this line gets a collection of the user's favorite movies
+        try {
+            // Attempt to retrieve the paginated list of user's favorite movies
+            $response = Favorite::where('user_id', Auth::id())->paginate(10);
 
-        return response()->json([
-            'success' => true,
-            'data' => $response
-        ]);
+            // Return a successful JSON response with the paginated data
+            return response()->json([
+                'success' => true,
+                'data' => $response
+            ]);
+        } catch (\Exception $e) {
+            // Handle any exceptions that occur during the query execution
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while retrieving favorites.',
+                'error' => $e->getMessage() // Include the exception message for debugging
+            ], 500); // Return a 500 Internal Server Error status code
+        }
     }
     /**
      * Add a movie or series to the authenticated user's favorites.
@@ -76,7 +86,7 @@ class FavoriteService
         return Favorite::where('content_id', $id)
             ->where('type', $type)
             ->where('user_id', $userId)
-            ;
+        ;
     }
     /**
      * Remove a movie or series from the authenticated user's favorites.
@@ -88,12 +98,12 @@ class FavoriteService
 
     public function delete(string $id, string $type): JsonResponse
     {
-        $fav = $this->hasFavorite($id,$type)->first(); // getting favorite record by content ID and user
+        $fav = $this->hasFavorite($id, $type); // getting favorite record by content ID and user
         // If the favorite is found, delete it.
-        if ($fav) {
-            $fav->delete();
+        if (!$fav->exists()) {
+            return response()->json(['success' => false, 'message' => 'resource not found'], 404);
         }
-        $fav->delete();
+        $fav->first()->delete();
         return response()->json(['success', true], 200);
     }
 }
