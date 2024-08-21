@@ -41,9 +41,9 @@ class SearchController extends Controller
         // Call the search method of TMDBService and get the results
         $results = $this->tmdbService->search($query, $perPage, $currentPage);
 
-        if (!$results) {
-            return response()->json(['success' => false]);
-        }
+        /* if (!$results) { */
+        /*     return response()->json(['success' => false]); */
+        /* } */
         // Return the search results as a JSON response
         return response()->json([
             'success' => true, // Indicate that the request was successful
