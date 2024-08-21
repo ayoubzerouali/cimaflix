@@ -3,62 +3,77 @@
 namespace App\Services;
 
 use App\Http\Resources\SerieResource;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 
 class SerieService extends TMDBService
 {
     /**
-     * Call the tmdb api to fetch many series/series .
+     * Fetch a paginated list of series from the TMDB API.
+     *
+     * @return \Illuminate\Http\JsonResponse JSON response with paginated series data.
      */
-
-    public function all()
+    public function all(): JsonResponse
     {
-        $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $perPage = 10; // NUmber of items per page returned by our API
-        $apiPerPage = 20;  // Number of items per page returned by the API
+        $currentPage = LengthAwarePaginator::resolveCurrentPage(); // Get the current page number
+        $perPage = 10; // Number of items per page for pagination
+        $apiPerPage = 20; // Number of items per page returned by the TMDB API
 
-        $apiPage = ceil(($currentPage * $perPage) / $apiPerPage);
+        $apiPage = ceil(($currentPage * $perPage) / $apiPerPage); // Calculate the API page number
 
+        $response = collect($this->makeRequest('discover/tv', ['page' => $apiPage])); // Fetch series data from TMDB API
 
-        $response = collect($this->makeRequest('discover/movie', ['page' => $apiPage]));
+        $series = SerieResource::collection($response['results']); // Transform series data using SerieResource
+        $total = $response['total_results']; // Total number of series results
 
-        $series = SerieResource::collection($response['results']);
-        $total = $response['total_results'];
-
-        $currentPageSeries = $series->slice(($currentPage - 1) * $perPage % $apiPerPage, $perPage)->values();
+        $currentPageSeries = $series->slice(($currentPage - 1) * $perPage % $apiPerPage, $perPage)->values(); // Slice data for current page
 
         $paginatedSeries = new LengthAwarePaginator($currentPageSeries, $total, $perPage, $currentPage, [
-            'path' => Paginator::resolveCurrentPath()
+            'path' => Paginator::resolveCurrentPath() // Set the path for pagination links
         ]);
+
         return response()->json([
-            'success' => true,
-            'page' => $response['page'],
-            'data' => $paginatedSeries
+            'success' => true, // Indicate the request was successful
+            'page' => $response['page'], // Current page number
+            'data' => $paginatedSeries // Paginated series data
         ]);
     }
+
     /**
-     * Call the tmdb api to fetch movie/serie by id.
+     * Fetch a single series by ID from the TMDB API.
+     *
+     * @param int $id Series ID.
+     * @return SerieResource Transformed series data.
      */
-    public  function find($id)
+    public function find($id): SerieResource
     {
-        return new SerieResource($this->makeRequest('tv/' . $id));
+        return new SerieResource($this->makeRequest('tv/' . $id)); // Return series data transformed by SerieResource
     }
 
     /**
-     * Call the tmdb api to fetch 5 top series ranked by popularity.
+     * Fetch top-rated series from the TMDB API.
+     *
+     * @param array $params Query parameters for fetching top-rated series.
+     * @return \Illuminate\Http\JsonResponse JSON response with top-rated series data.
      */
-    public function getTopRated($params)
+    public function getTopRated($params): JsonResponse
     {
-        /* return $this->makeRequest('discover/tv', $params); */
-
-        return response()->json(['success' => true, 'data' => collect($this->makeRequest('discover/tv', $params))->take(5)]);
+        // Fetch top-rated series and return the top 5
+        return response()->json([
+            'success' => true, // Indicate the request was successful
+            'data' => collect($this->makeRequest('discover/tv', $params))->take(5) // Top 5 series
+        ]);
     }
+
     /**
-     * Call the tmdb api to fetch series trailer .
+     * Fetch the trailer for a series by ID from the TMDB API.
+     *
+     * @param int $id Series ID.
+     * @return object Trailer data from TMDB API.
      */
-    public function getTrailer($id)
+    public function getTrailer($id): JsonResponse
     {
-        return $this->makeRequest('tv/' . $id . '/videos');
+        return $this->makeRequest('tv/' . $id . '/videos'); // Fetch trailer data for the series
     }
 }

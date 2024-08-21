@@ -5,13 +5,14 @@ namespace App\Services;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use App\Http\Resources\MovieResource;
+use Illuminate\Http\JsonResponse;
 
 class MovieService extends TMDBService
 {
     /**
      * Call the tmdb api to fetch many movies/movies .
      */
-    public function all()
+    public function all():JsonResponse
     {
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $perPage = 10; // NUmber of items per page returned by our API
@@ -24,14 +25,12 @@ class MovieService extends TMDBService
 
         $movies = MovieResource::collection($response['results']);
         $total = $response['total_results'];
-
-        // Even page: Take items from the start of the page
+        // Even page: Take items from the middle of the page
         $currentPageMovies = $movies->slice(($currentPage - 1) * $perPage % $apiPerPage, $perPage)->values();
 
         $paginatedMovies = new LengthAwarePaginator($currentPageMovies, $total, $perPage, $currentPage, [
             'path' => Paginator::resolveCurrentPath()
         ]);
-
         return response()->json([
             'success' => true,
             'page' => $response['page'],
@@ -41,7 +40,7 @@ class MovieService extends TMDBService
     /**
      * Call the tmdb api to fetch movie/serie by id.
      */
-    public  function find($id)
+    public  function find($id):MovieResource
     {
         return new MovieResource((object)$this->makeRequest('movie/' . $id));
     }
@@ -49,14 +48,14 @@ class MovieService extends TMDBService
     /**
      * Call the tmdb api to fetch (movie/serie)'s trailer .
      */
-    public function getTrailer($id)
+    public function getTrailer($id):JsonResponse
     {
         return $this->makeRequest('movie/' . $id . '/videos');
     }
     /**
      * Call the tmdb api to fetch 5 top movies ranked by popularity.
      */
-    public function getTopRated($params)
+    public function getTopRated($params):JsonResponse
     {
         return response()->json(['success' => true, 'data' => collect($this->makeRequest('discover/movie', $params))->take(5)]);
     }

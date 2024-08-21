@@ -13,9 +13,11 @@ return new class extends Migration
     {
         Schema::create('favorites', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('content_id');
-            $table->foreignId('user_id')->constrained();
-            $table->enum('type', ['movie', 'tv']);
+            $table->bigInteger('content_id'); // the id of the content stored either series or movie
+            $table->foreignId('user_id')->constrained(); // foreing key user
+            $table->string('title')->nullable(); // Movie or series title
+            $table->text('description')->nullable(); // Description
+            $table->enum('type', ['movie', 'tv']); // favorite type of record
             $table->timestamps();
         });
     }
